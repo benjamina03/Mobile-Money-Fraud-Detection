@@ -1,6 +1,6 @@
 """
 Machine Learning models for fraud detection.
-Implements Isolation Forest, LOF, and Deep Autoencoder.
+Implements Isolation Forest, LOF, and Deep Autoencoder using PyTorch.
 """
 
 import numpy as np
@@ -10,15 +10,61 @@ from typing import Tuple, Dict, Any
 import warnings
 warnings.filterwarnings('ignore')
 
-# TensorFlow imports with error handling for environments without GPU
-try:
-    import tensorflow as tf
-    from tensorflow import keras
-    from tensorflow.keras import layers, Model
-    from tensorflow.keras.callbacks import EarlyStopping
-    TF_AVAILABLE = True
-except ImportError:
-    TF_AVAILABLE = False
+# PyTorch imports
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
+
+
+class Autoencoder(nn.Module):
+    """PyTorch Autoencoder for anomaly detection."""
+    
+    def __init__(self, input_dim: int):
+        super(Autoencoder, self).__init__()
+        
+        # Encoder
+        self.encoder = nn.Sequential(
+            nn.Linear(input_dim, 64),
+            nn.ReLU(),
+            nn.BatchNorm1d(64),
+            nn.Dropout(0.2),
+            nn.Linear(64, 32),
+            nn.ReLU(),
+            nn.BatchNorm1d(32),
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 8),
+            nn.ReLU()
+        )
+        
+        # Decoder
+        self.decoder = nn.Sequential(
+            nn.Linear(8, 16),
+            nn.ReLU(),
+            nn.BatchNorm1d(16),
+            nn.Linear(16, 32),
+            nn.ReLU(),
+            nn.BatchNorm1d(32),
+            nn.Dropout(0.2),
+            nn.Linear(32, 64),
+            nn.ReLU(),
+            nn.Linear(64, input_dim)
+        )
+    
+    def encode(self, x):
+        """Encode input to latent representation."""
+        return self.encoder(x)
+    
+    def decode(self, z):
+        """Decode latent representation to reconstruction."""
+        return self.decoder(z)
+    
+    def forward(self, x):
+        """Forward pass returning both encoded and decoded outputs."""
+        encoded = self.encode(x)
+        decoded = self.decode(encoded)
+        return decoded
 
 
 class FraudDetectionModels:
@@ -38,6 +84,11 @@ class FraudDetectionModels:
         self.lof = None
         self.autoencoder = None
         self.ae_threshold = None
+        # Set device with graceful fallback to CPU
+        try:
+            self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        except Exception:
+            self.device = torch.device('cpu')
         
     def train_isolation_forest(self, X: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """
@@ -105,55 +156,10 @@ class FraudDetectionModels:
         
         return predictions, anomaly_scores
     
-    def build_autoencoder(self, input_dim: int) -> Model:
-        """
-        Build a deep autoencoder model.
-        
-        Args:
-            input_dim: Number of input features
-            
-        Returns:
-            Compiled Keras autoencoder model
-        """
-        if not TF_AVAILABLE:
-            return None
-            
-        # Encoder
-        inputs = keras.Input(shape=(input_dim,))
-        encoded = layers.Dense(64, activation='relu')(inputs)
-        encoded = layers.BatchNormalization()(encoded)
-        encoded = layers.Dropout(0.2)(encoded)
-        encoded = layers.Dense(32, activation='relu')(encoded)
-        encoded = layers.BatchNormalization()(encoded)
-        encoded = layers.Dense(16, activation='relu')(encoded)
-        
-        # Bottleneck
-        bottleneck = layers.Dense(8, activation='relu')(encoded)
-        
-        # Decoder
-        decoded = layers.Dense(16, activation='relu')(bottleneck)
-        decoded = layers.BatchNormalization()(decoded)
-        decoded = layers.Dense(32, activation='relu')(decoded)
-        decoded = layers.BatchNormalization()(decoded)
-        decoded = layers.Dropout(0.2)(decoded)
-        decoded = layers.Dense(64, activation='relu')(decoded)
-        outputs = layers.Dense(input_dim, activation='linear')(decoded)
-        
-        # Create model
-        autoencoder = Model(inputs, outputs, name='fraud_autoencoder')
-        
-        # Compile
-        autoencoder.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=0.001),
-            loss='mse'
-        )
-        
-        return autoencoder
-    
     def train_autoencoder(self, X: np.ndarray, epochs: int = 50, 
                           batch_size: int = 256) -> Tuple[np.ndarray, float, float]:
         """
-        Train the autoencoder and compute reconstruction errors.
+        Train the PyTorch autoencoder and compute reconstruction errors.
         
         Args:
             X: Feature matrix
@@ -163,35 +169,59 @@ class FraudDetectionModels:
         Returns:
             Tuple of (reconstruction_errors, threshold, final_loss)
         """
-        if not TF_AVAILABLE:
-            # Fallback: return mock data if TensorFlow is not available
-            n_samples = X.shape[0]
-            mock_errors = np.random.uniform(0, 0.1, n_samples)
-            threshold = np.percentile(mock_errors, 100 * (1 - self.contamination))
-            return mock_errors, threshold, 0.05
-        
         input_dim = X.shape[1]
-        self.autoencoder = self.build_autoencoder(input_dim)
+        self.autoencoder = Autoencoder(input_dim)
         
-        # Early stopping callback
-        early_stopping = EarlyStopping(
-            monitor='loss',
-            patience=5,
-            restore_best_weights=True
-        )
+        # Move model to device with error handling
+        try:
+            self.autoencoder = self.autoencoder.to(self.device)
+        except Exception:
+            self.device = torch.device('cpu')
+            self.autoencoder = self.autoencoder.to(self.device)
         
-        # Train the autoencoder
-        history = self.autoencoder.fit(
-            X, X,
-            epochs=epochs,
-            batch_size=batch_size,
-            shuffle=True,
-            callbacks=[early_stopping],
-            verbose=0
-        )
+        # Convert to PyTorch tensors
+        X_tensor = torch.FloatTensor(X).to(self.device)
+        dataset = TensorDataset(X_tensor, X_tensor)
+        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+        
+        # Loss and optimizer
+        criterion = nn.MSELoss()
+        optimizer = optim.Adam(self.autoencoder.parameters(), lr=0.001)
+        
+        # Training loop with early stopping
+        best_loss = float('inf')
+        patience = 5
+        patience_counter = 0
+        final_loss = 0.0
+        
+        self.autoencoder.train()
+        for epoch in range(epochs):
+            epoch_loss = 0.0
+            for batch_x, _ in dataloader:
+                optimizer.zero_grad()
+                outputs = self.autoencoder(batch_x)
+                loss = criterion(outputs, batch_x)
+                loss.backward()
+                optimizer.step()
+                epoch_loss += loss.item()
+            
+            epoch_loss /= len(dataloader)
+            final_loss = epoch_loss
+            
+            # Early stopping check
+            if epoch_loss < best_loss:
+                best_loss = epoch_loss
+                patience_counter = 0
+            else:
+                patience_counter += 1
+                if patience_counter >= patience:
+                    break
         
         # Compute reconstruction errors
-        reconstructions = self.autoencoder.predict(X, verbose=0)
+        self.autoencoder.eval()
+        with torch.no_grad():
+            reconstructions = self.autoencoder(X_tensor).cpu().numpy()
+        
         mse = np.mean(np.power(X - reconstructions, 2), axis=1)
         
         # Set threshold based on percentile
@@ -205,8 +235,6 @@ class FraudDetectionModels:
         else:
             normalized_errors = np.zeros_like(mse)
         
-        final_loss = history.history['loss'][-1]
-        
         return normalized_errors, float(self.ae_threshold), float(final_loss)
     
     def get_autoencoder_predictions(self, reconstruction_errors: np.ndarray) -> np.ndarray:
@@ -219,7 +247,6 @@ class FraudDetectionModels:
         Returns:
             Predictions array (1 for inliers, -1 for outliers)
         """
-        # Denormalize errors for threshold comparison
         predictions = np.where(
             reconstruction_errors > np.percentile(reconstruction_errors, 100 * (1 - self.contamination)),
             -1, 1
