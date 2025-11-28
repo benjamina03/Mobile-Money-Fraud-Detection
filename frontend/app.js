@@ -6,7 +6,7 @@
 // API Configuration
 const API_BASE_URL = window.location.origin;
 
-// DOM Elements
+// DOM Elements with null safety
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
 const fileInfo = document.getElementById('fileInfo');
@@ -15,6 +15,18 @@ const clearBtn = document.getElementById('clearBtn');
 const loading = document.getElementById('loading');
 const alertBanner = document.getElementById('alertBanner');
 const resultsSection = document.getElementById('resultsSection');
+
+// Validate required DOM elements exist
+function validateDOMElements() {
+    const requiredElements = { uploadArea, fileInput, fileInfo, analyzeBtn, clearBtn, loading, alertBanner, resultsSection };
+    for (const [name, element] of Object.entries(requiredElements)) {
+        if (!element) {
+            console.error(`Required DOM element '${name}' not found`);
+            return false;
+        }
+    }
+    return true;
+}
 
 // Chart instances
 let confusionChart = null;
@@ -505,5 +517,9 @@ function formatPercentage(value) {
 // ===========================
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (!validateDOMElements()) {
+        console.error('Failed to initialize: Missing required DOM elements');
+        return;
+    }
     console.log('Mobile Money Fraud Detection System initialized');
 });

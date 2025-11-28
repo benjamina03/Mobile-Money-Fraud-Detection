@@ -153,9 +153,9 @@ def hybrid_ensemble(model_results: Dict[str, Any],
     # Generate result labels
     results = ['Fraud' if p == 1 else 'Valid' for p in predictions]
     
-    # Compute overall ensemble score (average of individual accuracies weighted)
-    overall_score = round(np.mean(ensemble_scores[predictions == 1]) if np.any(predictions == 1) 
-                          else 0.0, 4)
+    # Compute overall ensemble score as the mean of all ensemble scores
+    # This represents the overall anomaly level in the dataset
+    overall_score = round(float(np.mean(ensemble_scores)), 4)
     
     return {
         'scores': ensemble_scores,

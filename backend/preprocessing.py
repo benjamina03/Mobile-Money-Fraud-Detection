@@ -11,6 +11,9 @@ from typing import Tuple
 # Transaction types in PaySim dataset
 TRANSACTION_TYPES = ['CASH_IN', 'CASH_OUT', 'DEBIT', 'PAYMENT', 'TRANSFER']
 
+# Small epsilon value for division by zero protection
+EPSILON = 1e-10
+
 
 def load_and_clean_dataset(file) -> pd.DataFrame:
     """
@@ -73,9 +76,9 @@ def extract_features(df: pd.DataFrame) -> pd.DataFrame:
     df['orig_balance_diff'] = df['oldbalanceOrg'] - df['newbalanceOrig']
     df['dest_balance_diff'] = df['newbalanceDest'] - df['oldbalanceDest']
     
-    # Calculate ratio features (with division by zero handling)
-    df['amount_orig_ratio'] = df['amount'] / (df['oldbalanceOrg'] + 1)
-    df['amount_dest_ratio'] = df['amount'] / (df['oldbalanceDest'] + 1)
+    # Calculate ratio features (with division by zero handling using EPSILON)
+    df['amount_orig_ratio'] = df['amount'] / (df['oldbalanceOrg'] + EPSILON)
+    df['amount_dest_ratio'] = df['amount'] / (df['oldbalanceDest'] + EPSILON)
     
     # Flag for zero balances (suspicious patterns)
     df['zero_orig_new_balance'] = (df['newbalanceOrig'] == 0).astype(int)
