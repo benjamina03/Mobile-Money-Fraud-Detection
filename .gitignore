@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data files
+*.csv
+*.parquet
+data/
+datasets/
+
+# Model files
+*.pkl
+*.pth
+*.joblib
+models/
+trained_models/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
+streamlit.log
+nohup.out
+
+# MySQL
+*.sql
+*.db
+*.sqlite
