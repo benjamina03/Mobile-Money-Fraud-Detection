@@ -1,0 +1,128 @@
+nohup: ignoring input
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+2026-01-16 21:48:24.415 Did not auto detect external IP.
+Please go to https://docs.streamlit.io/ for debugging hints.
+
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8501
+  Network URL: http://10.1.0.163:8501
+
+Isolation Forest training complete
+Autoencoder Epoch [10/30], Loss: 0.9402
+Autoencoder Epoch [20/30], Loss: 0.9333
+Autoencoder Epoch [30/30], Loss: 0.9236
+DBSCAN complete: 0 clusters, 50 noise points
+[31m──[0m[31m────────────────────────[0m[31m [0m[1;31mTraceback [0m[1;2;31m(most recent call last)[0m[31m [0m[31m─────────────────────────[0m[31m──[0m
+[31m [0m [2;33m/home/runner/.local/lib/python3.12/site-packages/streamlit/runtime/scriptrunner/[0m[1;33mexec[0m [31m [0m
+[31m [0m [1;33m_code.py[0m:[94m129[0m in [92mexec_func_with_error_handling[0m                                        [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/.local/lib/python3.12/site-packages/streamlit/runtime/scriptrunner/[0m[1;33mscri[0m [31m [0m
+[31m [0m [1;33mpt_runner.py[0m:[94m672[0m in [92mcode_to_exec[0m                                                     [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/work/Mobile-Money-Fraud-Detection/Mobile-Money-Fraud-Detection/[0m[1;33mapp.py[0m:[94m4[0m [31m [0m
+[31m [0m [94m65[0m in [92m<module>[0m                                                                       [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m462 [0m                                                                               [31m [0m
+[31m [0m   [2m463 [0m                                                                               [31m [0m
+[31m [0m   [2m464 [0m[94mif[0m [91m__name__[0m == [33m"[0m[33m__main__[0m[33m"[0m:                                                     [31m [0m
+[31m [0m [31m❱ [0m465 [2m│   [0mmain()                                                                     [31m [0m
+[31m [0m   [2m466 [0m                                                                               [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/work/Mobile-Money-Fraud-Detection/Mobile-Money-Fraud-Detection/[0m[1;33mapp.py[0m:[94m4[0m [31m [0m
+[31m [0m [94m57[0m in [92mmain[0m                                                                           [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m454 [0m[2m│   [0m                                                                           [31m [0m
+[31m [0m   [2m455 [0m[2m│   [0m[2m# Route to selected page[0m                                                   [31m [0m
+[31m [0m   [2m456 [0m[2m│   [0m[94mif[0m selected == [33m"[0m[33mReal-Time Monitor[0m[33m"[0m:                                        [31m [0m
+[31m [0m [31m❱ [0m457 [2m│   │   [0mreal_time_monitor()                                                    [31m [0m
+[31m [0m   [2m458 [0m[2m│   [0m[94melif[0m selected == [33m"[0m[33mBatch Analysis[0m[33m"[0m:                                         [31m [0m
+[31m [0m   [2m459 [0m[2m│   │   [0mbatch_analysis()                                                       [31m [0m
+[31m [0m   [2m460 [0m[2m│   [0m[94melif[0m selected == [33m"[0m[33mInvestigation & Reports[0m[33m"[0m:                                [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/work/Mobile-Money-Fraud-Detection/Mobile-Money-Fraud-Detection/[0m[1;33mapp.py[0m:[94m1[0m [31m [0m
+[31m [0m [94m64[0m in [92mreal_time_monitor[0m                                                              [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m161 [0m[2m│   │   │   [0m[94mfor[0m idx, (_, transaction) [95min[0m [96menumerate[0m(transactions_to_process.ite [31m [0m
+[31m [0m   [2m162 [0m[2m│   │   │   │   [0m[2m# Preprocess transaction[0m                                       [31m [0m
+[31m [0m   [2m163 [0m[2m│   │   │   │   [0mtransaction_df = pd.DataFrame([transaction])                   [31m [0m
+[31m [0m [31m❱ [0m164 [2m│   │   │   │   [0mX_transaction, _, df_processed = preprocess_data(              [31m [0m
+[31m [0m   [2m165 [0m[2m│   │   │   │   │   [0mtransaction_df.copy(),                                     [31m [0m
+[31m [0m   [2m166 [0m[2m│   │   │   │   │   [0mscaler=st.session_state.scaler                             [31m [0m
+[31m [0m   [2m167 [0m[2m│   │   │   │   [0m)                                                              [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/work/Mobile-Money-Fraud-Detection/Mobile-Money-Fraud-Detection/[0m[1;33mpreproce[0m [31m [0m
+[31m [0m [1;33mssing.py[0m:[94m149[0m in [92mpreprocess_data[0m                                                      [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m146 [0m[2m│   [0mdf_selected = select_features(df_featured, feature_columns)                [31m [0m
+[31m [0m   [2m147 [0m[2m│   [0m                                                                           [31m [0m
+[31m [0m   [2m148 [0m[2m│   [0m[2m# Scale features[0m                                                           [31m [0m
+[31m [0m [31m❱ [0m149 [2m│   [0mscaled_data, fitted_scaler = scale_features(df_selected, scaler)           [31m [0m
+[31m [0m   [2m150 [0m[2m│   [0m                                                                           [31m [0m
+[31m [0m   [2m151 [0m[2m│   [0m[94mreturn[0m scaled_data, fitted_scaler, df_featured                             [31m [0m
+[31m [0m   [2m152 [0m                                                                               [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/work/Mobile-Money-Fraud-Detection/Mobile-Money-Fraud-Detection/[0m[1;33mpreproce[0m [31m [0m
+[31m [0m [1;33mssing.py[0m:[94m125[0m in [92mscale_features[0m                                                       [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m122 [0m[2m│   │   [0m                                                                       [31m [0m
+[31m [0m   [2m123 [0m[2m│   │   [0mscaled_data = scaler.fit_transform(df)                                 [31m [0m
+[31m [0m   [2m124 [0m[2m│   [0m[94melse[0m:                                                                      [31m [0m
+[31m [0m [31m❱ [0m125 [2m│   │   [0mscaled_data = scaler.transform(df)                                     [31m [0m
+[31m [0m   [2m126 [0m[2m│   [0m                                                                           [31m [0m
+[31m [0m   [2m127 [0m[2m│   [0m[94mreturn[0m scaled_data, scaler                                                 [31m [0m
+[31m [0m   [2m128 [0m                                                                               [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/.local/lib/python3.12/site-packages/sklearn/utils/[0m[1;33m_set_output.py[0m:[94m316[0m in [31m [0m
+[31m [0m [92mwrapped[0m                                                                              [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m313 [0m[2m│   [0m                                                                           [31m [0m
+[31m [0m   [2m314 [0m[2m│   [0m[1;95m@wraps[0m(f)                                                                  [31m [0m
+[31m [0m   [2m315 [0m[2m│   [0m[94mdef[0m [92mwrapped[0m([96mself[0m, X, *args, **kwargs):                                     [31m [0m
+[31m [0m [31m❱ [0m316 [2m│   │   [0mdata_to_wrap = f([96mself[0m, X, *args, **kwargs)                             [31m [0m
+[31m [0m   [2m317 [0m[2m│   │   [0m[94mif[0m [96misinstance[0m(data_to_wrap, [96mtuple[0m):                                    [31m [0m
+[31m [0m   [2m318 [0m[2m│   │   │   [0m[2m# only wrap the first output for cross decomposition[0m               [31m [0m
+[31m [0m   [2m319 [0m[2m│   │   │   [0mreturn_tuple = (                                                   [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/.local/lib/python3.12/site-packages/sklearn/preprocessing/[0m[1;33m_data.py[0m:[94m1094[0m [31m [0m
+[31m [0m in [92mtransform[0m                                                                         [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m1091 [0m[2m│   │   [0mcheck_is_fitted([96mself[0m)                                                 [31m [0m
+[31m [0m   [2m1092 [0m[2m│   │   [0m                                                                      [31m [0m
+[31m [0m   [2m1093 [0m[2m│   │   [0mcopy = copy [94mif[0m copy [95mis[0m [95mnot[0m [94mNone[0m [94melse[0m [96mself[0m.copy                        [31m [0m
+[31m [0m [31m❱ [0m1094 [2m│   │   [0mX = validate_data(                                                    [31m [0m
+[31m [0m   [2m1095 [0m[2m│   │   │   [0m[96mself[0m,                                                             [31m [0m
+[31m [0m   [2m1096 [0m[2m│   │   │   [0mX,                                                                [31m [0m
+[31m [0m   [2m1097 [0m[2m│   │   │   [0mreset=[94mFalse[0m,                                                      [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/.local/lib/python3.12/site-packages/sklearn/utils/[0m[1;33mvalidation.py[0m:[94m2877[0m in [31m [0m
+[31m [0m [92mvalidate_data[0m                                                                        [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m2874 [0m[2;33m│   │   [0m[33mThe validated input. A tuple is returned if both `X` and `y` are[0m      [31m [0m
+[31m [0m   [2m2875 [0m[2;33m│   │   [0m[33mvalidated.[0m                                                            [31m [0m
+[31m [0m   [2m2876 [0m[2;33m│   [0m[33m"""[0m                                                                       [31m [0m
+[31m [0m [31m❱ [0m2877 [2m│   [0m_check_feature_names(_estimator, X, reset=reset)                          [31m [0m
+[31m [0m   [2m2878 [0m[2m│   [0mtags = get_tags(_estimator)                                               [31m [0m
+[31m [0m   [2m2879 [0m[2m│   [0m[94mif[0m y [95mis[0m [94mNone[0m [95mand[0m tags.target_tags.required:                               [31m [0m
+[31m [0m   [2m2880 [0m[2m│   │   [0m[94mraise[0m [96mValueError[0m(                                                     [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2;33m/home/runner/.local/lib/python3.12/site-packages/sklearn/utils/[0m[1;33mvalidation.py[0m:[94m2729[0m in [31m [0m
+[31m [0m [92m_check_feature_names[0m                                                                 [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m2726 [0m[2m│   │   [0m[94mif[0m [95mnot[0m missing_names [95mand[0m [95mnot[0m unexpected_names:                        [31m [0m
+[31m [0m   [2m2727 [0m[2m│   │   │   [0mmessage += [33m"[0m[33mFeature names must be in the same order as they were [0m [31m [0m
+[31m [0m   [2m2728 [0m[2m│   │   [0m                                                                      [31m [0m
+[31m [0m [31m❱ [0m2729 [2m│   │   [0m[94mraise[0m [96mValueError[0m(message)                                             [31m [0m
+[31m [0m   [2m2730 [0m                                                                              [31m [0m
+[31m [0m   [2m2731 [0m                                                                              [31m [0m
+[31m [0m   [2m2732 [0m[94mdef[0m [92m_check_n_features[0m(estimator, X, reset):                                   [31m [0m
+[31m────────────────────────────────────────────────────────────────────────────────────────[0m
+[1;91mValueError: [0mThe feature names should match those that were passed during fit.
+Feature names seen at fit time, yet now missing:
+- type_CASH-IN
+- type_CASH-OUT
+- type_DEBIT
+- type_PAYMENT
+

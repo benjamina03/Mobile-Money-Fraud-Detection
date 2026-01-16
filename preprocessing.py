@@ -60,8 +60,16 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     # For destination accounts (expected new balance = old balance + amount)
     df['balance_error_dest'] = (df['oldbalanceDest'] + df['amount']) - df['newbalanceDest']
     
-    # 3. Type Encoding (One-Hot)
+    # 3. Type Encoding (One-Hot) - ensure all categories are present
+    # Define all possible transaction types
+    all_types = ['CASH-IN', 'CASH-OUT', 'DEBIT', 'PAYMENT', 'TRANSFER']
     df = pd.get_dummies(df, columns=['type'], prefix='type')
+    
+    # Ensure all type columns exist (add missing ones with 0 values)
+    for trans_type in all_types:
+        col_name = f'type_{trans_type}'
+        if col_name not in df.columns:
+            df[col_name] = 0
     
     # Additional useful features
     df['amount_to_oldbalance_ratio'] = df['amount'] / (df['oldbalanceOrg'] + 1)
@@ -82,17 +90,15 @@ def select_features(df: pd.DataFrame, feature_columns: Optional[list] = None) ->
         DataFrame with selected features only
     """
     if feature_columns is None:
-        # Default feature set
+        # Default feature set (order matters for consistency)
         feature_columns = [
             'step', 'amount', 'oldbalanceOrg', 'newbalanceOrig',
             'oldbalanceDest', 'newbalanceDest', 'transaction_velocity',
             'balance_error_orig', 'balance_error_dest',
-            'amount_to_oldbalance_ratio', 'dest_balance_change'
+            'amount_to_oldbalance_ratio', 'dest_balance_change',
+            # Type columns in fixed order
+            'type_CASH-IN', 'type_CASH-OUT', 'type_DEBIT', 'type_PAYMENT', 'type_TRANSFER'
         ]
-        
-        # Add type columns dynamically
-        type_cols = [col for col in df.columns if col.startswith('type_')]
-        feature_columns.extend(type_cols)
     
     # Only select columns that exist in the dataframe
     available_features = [col for col in feature_columns if col in df.columns]
